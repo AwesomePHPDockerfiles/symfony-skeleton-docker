@@ -53,9 +53,6 @@ RUN <<EOT
     )
     docker-php-ext-install -j "$(nproc)" "${PHP_EXTS[@]}"
 
-    # Install and enable opcache separately to avoid make clean bugs
-    # docker-php-ext-install opcache
-
     pie install pie-extensions/igbinary:3.2.17RC1
 
     # Remove build-time dependencies
@@ -67,7 +64,19 @@ RUN <<EOT
     rm -rf /var/lib/apt/lists/*
 EOT
 
+# Create unprivileged user
+RUN groupadd appuser \
+    && useradd -m -g appuser -s /bin/bash appuser
+COPY --chown=appuser:appuser docker/.bashrc /home/appuser/
+
 # Allow Composer to use all available RAM while installing packages
 ENV COMPOSER_MEMORY_LIMIT="-1"
 
 WORKDIR /var/www/projects
+
+
+FROM php-base AS php-fpm
+
+USER appuser:appuser
+
+CMD ["bash"]
