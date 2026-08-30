@@ -1,2 +1,2 @@
 @echo off
-docker compose --env-file .env.local exec php %*
+docker compose exec php %*

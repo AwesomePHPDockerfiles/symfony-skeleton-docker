@@ -79,4 +79,4 @@ FROM php-base AS php-fpm
 
 USER appuser:appuser
 
-CMD ["bash"]
+CMD ["php-fpm"]
