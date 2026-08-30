@@ -8,6 +8,7 @@ services:
       - "9000"
     volumes:
       - ./projects:/var/www/projects
+      - ./project_docker_files:/var/www/project_docker_files
     extra_hosts:
       - "host.docker.internal:host-gateway"
 

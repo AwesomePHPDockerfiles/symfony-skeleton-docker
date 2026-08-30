@@ -61,19 +61,28 @@ first-time-setup: create start ## Run initial setup
 
 .PHONY: create-project
 create-project: ## Create a new project for building a microservice, console application or API
-ifndef PROJECT_DIR
-$(error PROJECT_DIR is not set. Use: make create-project PROJECT_DIR=<value>.)
-endif
-	$(DCEP) composer create-project symfony/skeleton:"8.1.*" $(PROJECT_DIR)
+	@if [ -z "$(PROJECT_DIR)" ]; then \
+		echo "PROJECT_DIR is not set. Use: make create-project PROJECT_DIR=<value>."; \
+		exit 1; \
+	fi
+
+	$(DCEP) bash -c "\
+		set -eux && \
+		composer create-project symfony/skeleton:'8.1.*' $(PROJECT_DIR) && \
+		cp -R ../project_docker_files/. $(PROJECT_DIR)/ \
+	"
 
 .PHONY: create-project-webapp
 create-project-webapp: ## Create a new project for building a traditional web application
-ifndef PROJECT_DIR
-$(error PROJECT_DIR is not set. Use: make create-project-webapp PROJECT_DIR=<value>.)
-endif
+	@if [ -z "$(PROJECT_DIR)" ]; then \
+		echo "PROJECT_DIR is not set. Use: make create-project-webapp PROJECT_DIR=<value>."; \
+		exit 1; \
+	fi
+
 	$(DCEP) bash -c "\
 		set -eux && \
 		composer create-project symfony/skeleton:'8.1.*' $(PROJECT_DIR) && \
 		cd $(PROJECT_DIR) && \
-		composer require webapp \
+		composer require webapp && \
+		cp -R ../project_docker_files/. $(PROJECT_DIR)/ \
 	"
