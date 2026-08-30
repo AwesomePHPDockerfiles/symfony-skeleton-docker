@@ -25,7 +25,7 @@ else
 	HELP_SUPPORTED = yes
 endif
 
-COMPOSE = docker compose --env-file .env.local
+COMPOSE = docker compose
 
 # https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help
