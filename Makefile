@@ -56,16 +56,21 @@ stop: ## Stop containers
 .PHONY: restart
 restart: stop start ## Restart containers
 
-.PHONY: install
-install: ## Install all application dependencies
-	$(DCEP) composer install --ansi
-
-.PHONY: install-assets
-install-assets: ## Install all bundle assets
-	$(DCEP) php bin/console assets:install --symlink
-
 .PHONY: first-time-setup
-first-time-setup: create start install install-assets ## Run initial setup
-# first-time-setup: pull start install install-assets ## Run initial setup
+first-time-setup: create start ## Run initial setup
+
+.PHONY: create-project
+create-project: ## Create a new project for building a microservice, console application or API
+	ifndef PROJECT_DIR
+		$(error PROJECT_DIR is not set. Use: make create-project PROJECT_DIR=<value>.)
+	endif
+	composer create-project symfony/skeleton:"8.1.*" $(PROJECT_DIR)
 
 .PHONY: create-project-webapp
+create-project-webapp: ## Create a new project for building a traditional web application
+	ifndef PROJECT_DIR
+		$(error PROJECT_DIR is not set. Use: make create-project-webapp PROJECT_DIR=<value>.)
+	endif
+	composer create-project symfony/skeleton:"8.1.*" $(PROJECT_DIR)
+	cd $(PROJECT_DIR)
+	composer require webapp

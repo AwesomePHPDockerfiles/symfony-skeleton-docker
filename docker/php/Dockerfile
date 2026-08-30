@@ -66,3 +66,8 @@ RUN <<EOT
     apt-get clean
     rm -rf /var/lib/apt/lists/*
 EOT
+
+# Allow Composer to use all available RAM while installing packages
+ENV COMPOSER_MEMORY_LIMIT="-1"
+
+WORKDIR /var/www/projects
