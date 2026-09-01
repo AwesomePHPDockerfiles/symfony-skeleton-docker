@@ -1,1 +1,1 @@
-FROM postgis/postgis:14-3.3
+FROM postgres:16.15-trixie
