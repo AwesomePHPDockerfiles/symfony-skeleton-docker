@@ -11,6 +11,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN <<EOT
 #!/bin/bash
     export DEBIAN_FRONTEND="noninteractive"
+
     set -eux
 
     apt-get update

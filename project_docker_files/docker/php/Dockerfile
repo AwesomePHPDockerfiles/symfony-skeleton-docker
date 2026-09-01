@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM php:8.2-fpm-bookworm AS php-base
+FROM php:8.5-fpm-trixie AS php-base
 
 # Install PIE (PHP Installer for Extensions) https://php.github.io/pie/#docs/usage
 COPY --from=ghcr.io/php/pie:bin /pie /usr/local/bin/pie
@@ -21,16 +21,17 @@ RUN <<EOT
         bash
         git
         libbz2-1.0
-        libicu72
+        libicu76
         libpq5
         libxml2
-        libzip4
+        libzip5
         unzip
     )
     apt-get install --yes --no-install-recommends "${PERM_DEPS[@]}"
 
     # Install build-time dependencies
     BUILD_DEPS=(
+        build-essential
         libbz2-dev
         libicu-dev
         libpq-dev
@@ -45,21 +46,16 @@ RUN <<EOT
         bcmath
         bz2
         intl
-        opcache
         pcntl
         pdo_pgsql
         soap
+        sockets
         zip
     )
     docker-php-ext-install -j "$(nproc)" "${PHP_EXTS[@]}"
 
-    # https://github.com/docker-library/php/issues/1245
-    CFLAGS=${CFLAGS:-""}
-    CFLAGS="$CFLAGS -D_GNU_SOURCE" docker-php-ext-install sockets
-
-    pie install pie-extensions/igbinary
-    pie install xdebug/xdebug
-    docker-php-ext-enable igbinary
+    pie install pie-extensions/igbinary:3.2.17RC1
+    pie install xdebug/xdebug:3.5.3
 
     # Remove build-time dependencies
     apt-get remove --yes --purge --auto-remove "${BUILD_DEPS[@]}"
@@ -68,10 +64,6 @@ RUN <<EOT
     # Clean apt cache
     apt-get clean
     rm -rf /var/lib/apt/lists/*
-
-    # Upgrade default shell
-    # rm /bin/sh
-    # ln -s /bin/bash /bin/sh
 EOT
 
 # Create unprivileged user
