@@ -69,7 +69,7 @@ create-project: ## Create a new project for building a microservice, console app
 	$(DCEP) bash -c "\
 		set -eux && \
 		composer create-project symfony/skeleton:'8.1.*' $(PROJECT_DIR) && \
-		cp -R ../../project_docker_files/. $(PROJECT_DIR)/ \
+		cp -R ../../project_docker_files/. ./ \
 	"
 
 .PHONY: create-project-webapp
@@ -84,5 +84,5 @@ create-project-webapp: ## Create a new project for building a traditional web ap
 		composer create-project symfony/skeleton:'8.1.*' $(PROJECT_DIR) && \
 		cd $(PROJECT_DIR) && \
 		composer require webapp && \
-		cp -R ../../project_docker_files/. $(PROJECT_DIR)/ \
+		cp -R ../../project_docker_files/. ./ \
 	"
